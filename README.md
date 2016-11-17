@@ -1,5 +1,8 @@
-# ShiftedLCD
-Arduino Library for 74HC595 Shift Register using SPI
+= ShiftedLCD Library for Arduino =
+
+Allows communication via SPI Bus with alphanumerical liquid crystal displays (LCDs). 
+This library works with LCD displays that are modified to use 595 Shift Register (in this case 74HC595) pin compatible. 
+You can easily add Shift Register to your LCD. Please refer below link for pinouts and modifing your LCD.
 
 I had a spare 1602 LCD that laying around for a long time,
 Bare LCD that you can connect it to your Arduino in parallel.
@@ -36,4 +39,21 @@ TODO
 [] Bug Fixes
 
 
+== License ==
 
+Copyright (C) 2006-2008 Hans-Christoph Steiner. All rights reserved.
+Copyright (c) 2010 Arduino LLC. All right reserved.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA

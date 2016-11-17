@@ -24,87 +24,18 @@
 // can't assume that its in that state when a sketch starts (and the
 // LiquidCrystal constructor is called).
 
-LiquidCrystal::LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t enable,
-			     uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
-			     uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7)
-{
-  init(0, rs, rw, enable, d0, d1, d2, d3, d4, d5, d6, d7);
-}
-
-LiquidCrystal::LiquidCrystal(uint8_t rs, uint8_t enable,
-			     uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
-			     uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7)
-{
-  init(0, rs, 255, enable, d0, d1, d2, d3, d4, d5, d6, d7);
-}
-
-LiquidCrystal::LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t enable,
-			     uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3)
-{
-  init(1, rs, rw, enable, d0, d1, d2, d3, 0, 0, 0, 0);
-}
-
-LiquidCrystal::LiquidCrystal(uint8_t rs,  uint8_t enable,
-			     uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3)
-{
-  init(1, rs, 255, enable, d0, d1, d2, d3, 0, 0, 0, 0);
-}
-
 LiquidCrystal::LiquidCrystal(uint8_t ssPin) //SPI  ##############################
 {
   initSPI(ssPin);
   //shiftRegister pins 1,2,3,4,5,6,7 represent rs, rw, enable, d4-7 in that order
   //but we are not using RW so RW it's zero or 255
-  init(1, 1, 255, 3, 0, 0, 0, 0, 4, 5, 6, 7);   
 }
 
-void LiquidCrystal::init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, uint8_t enable,
-			 uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
-			 uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7)
-{
-  _rs_pin = rs;
-  _rw_pin = rw;
-  _enable_pin = enable;
-  
-  _data_pins[0] = d0;
-  _data_pins[1] = d1;
-  _data_pins[2] = d2;
-  _data_pins[3] = d3; 
-  _data_pins[4] = d4;
-  _data_pins[5] = d5;
-  _data_pins[6] = d6;
-  _data_pins[7] = d7; 
-
-  pinMode(_rs_pin, OUTPUT);
-  // we can save 1 pin by not using RW. Indicate by passing 255 instead of pin#
-  if (_rw_pin != 255) { 
-    pinMode(_rw_pin, OUTPUT);
-  }
-  pinMode(_enable_pin, OUTPUT);
-  
-  if (fourbitmode)
-    _displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
-  else 
-    _displayfunction = LCD_8BITMODE | LCD_1LINE | LCD_5x8DOTS;
-  
-  begin(16, 1);
-  
-  //since in initSPI constructor we set _usingSPI to true and we run it first
-  //from SPI constructor, we do nothing here otherwise we set it to false
-  if (_usingSpi) //SPI ######################################################
-  {
-    ;
-  }
-  else
-  {
-    _usingSpi = false;
-  }	
-}
 
 void LiquidCrystal::initSPI(uint8_t ssPin) //SPI ##########################################
 {
     // initialize SPI:
-	_usingSpi = true;
+
 	_latchPin = ssPin;
 	pinMode (_latchPin, OUTPUT); //just in case _latchPin is not 10 or 53 set it to output 
 								 //otherwise SPI.begin() will set it to output but just in case
@@ -140,12 +71,8 @@ void LiquidCrystal::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
   // according to datasheet, we need at least 40ms after power rises above 2.7V
   // before sending commands. Arduino can turn on way befer 4.5V so we'll wait 50
   delayMicroseconds(50000); 
-  // Now we pull both RS and R/W low to begin commands
-  digitalWrite(_rs_pin, LOW);
-  digitalWrite(_enable_pin, LOW);
-  if (_rw_pin != 255) { 
-    digitalWrite(_rw_pin, LOW);
-  }
+
+
   
   //put the LCD into 4 bit or 8 bit mode
   if (! (_displayfunction & LCD_8BITMODE)) {
@@ -309,68 +236,27 @@ inline size_t LiquidCrystal::write(uint8_t value) {
 
 // write either command or data, with automatic 4/8-bit selection
 void LiquidCrystal::send(uint8_t value, uint8_t mode) {
-  if (_usingSpi == false)
-  {
-    digitalWrite(_rs_pin, mode);
-
-    // if there is a RW pin indicated, set it low to Write
-    if (_rw_pin != 255) { 
-      digitalWrite(_rw_pin, LOW);
-    }
-    
-    if (_displayfunction & LCD_8BITMODE) {
-      write8bits(value); 
-    } else {
-      write4bits(value>>4);
-      write4bits(value);
-    }
-  }
-  else //we use SPI  ##########################################
-  {
-    bitWrite(_bitString, _rs_pin, mode); //set RS to mode
-    spiSendOut();
-    
+    bitWrite(_bitString, 1, mode); //set RS to mode
+    spiSendOut();    
 	//we are not using RW with SPI so we are not even bothering
 	//or 8BITMODE so we go straight to write4bits
     write4bits(value>>4);
     write4bits(value);    
-  }
 }
 
 void LiquidCrystal::pulseEnable(void) {
-  if (_usingSpi == false)
-  {
-    digitalWrite(_enable_pin, LOW);
-    delayMicroseconds(1);    
-    digitalWrite(_enable_pin, HIGH);
-    delayMicroseconds(1);    // enable pulse must be >450ns
-    digitalWrite(_enable_pin, LOW);
-    delayMicroseconds(100);   // commands need > 37us to settle
-  }
-  else //we use SPI #############################################
-  {
-    bitWrite(_bitString, _enable_pin, LOW); 
+    bitWrite(_bitString, 3, LOW); 
     spiSendOut();
 	delayMicroseconds(1); 
-	bitWrite(_bitString, _enable_pin, HIGH); 
+	bitWrite(_bitString, 3, HIGH); 
     spiSendOut();
 	delayMicroseconds(1);    // enable pulse must be >450ns
-	bitWrite(_bitString, _enable_pin, LOW); 
+	bitWrite(_bitString, 3, LOW); 
     spiSendOut();
 	delayMicroseconds(40);   // commands need > 37us to settle
-  }
 }
 
 void LiquidCrystal::write4bits(uint8_t value) {
-  if (_usingSpi == false)
-  {
-    for (int i = 0; i < 4; i++) {
-      pinMode(_data_pins[i], OUTPUT);
-      digitalWrite(_data_pins[i], (value >> i) & 0x01);
-    }
-  }
-  else //we use SPI ##############################################
-  {
     for (int i = 4; i < 8; i++)
 	{
 	  //we put the four bits in the _bit_string
@@ -378,18 +264,9 @@ void LiquidCrystal::write4bits(uint8_t value) {
 	}
 	//and send it out
 	spiSendOut();
-  }
   pulseEnable();
 }
 
-void LiquidCrystal::write8bits(uint8_t value) {
-  for (int i = 0; i < 8; i++) {
-    pinMode(_data_pins[i], OUTPUT);
-    digitalWrite(_data_pins[i], (value >> i) & 0x01);
-  }
-  
-  pulseEnable();
-}
 
 void LiquidCrystal::spiSendOut() //SPI #############################
 {

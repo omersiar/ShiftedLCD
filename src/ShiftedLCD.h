@@ -46,21 +46,8 @@
 
 class LiquidCrystal : public Print {
 public:
-  LiquidCrystal(uint8_t rs, uint8_t enable,
-		uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
-		uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7);
-  LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t enable,
-		uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
-		uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7);
-  LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t enable,
-		uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3);
-  LiquidCrystal(uint8_t rs, uint8_t enable,
-		uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3);
-  LiquidCrystal(uint8_t ssPin); //SPI to ShiftRegister 74HC595 ##########
 
-  void init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, uint8_t enable,
-	    uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
-	    uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7);
+  LiquidCrystal(uint8_t ssPin); //SPI to ShiftRegister 74HC595 ##########
 		
   void initSPI(uint8_t _ssPin); //SPI ##################################
     
@@ -90,18 +77,10 @@ private:
   void send(uint8_t, uint8_t);
   void spiSendOut();      // SPI ###########################################
   void write4bits(uint8_t);
-  void write8bits(uint8_t);
   void pulseEnable();
-  
-  
-  uint8_t _rs_pin; // LOW: command.  HIGH: character.
-  uint8_t _rw_pin; // LOW: write to LCD.  HIGH: read from LCD.
-  uint8_t _enable_pin; // activated by a HIGH pulse.
-  uint8_t _data_pins[8];
   
   //SPI #####################################################################
   uint8_t _bitString; //for SPI  bit0=not used, bit1=RS, bit2=RW, bit3=Enable, bits4-7 = DB4-7
-     bool _usingSpi;  //to let send and write functions know we are using SPI 
   uint8_t _latchPin;
   uint8_t _clockDivider;
   uint8_t _dataMode;

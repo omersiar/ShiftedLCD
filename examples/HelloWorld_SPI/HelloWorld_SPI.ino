@@ -1,25 +1,18 @@
 /*
-  LiquidCrystal Library - Hello World
+  ShiftedLCD Library - Hello World
  
- Demonstrates the use a 16x2 LCD display.  The LiquidCrystal
- library works with all LCD displays that are compatible with the 
- Hitachi HD44780 driver. There are many of them out there, and you
- can usually tell them by the 16-pin interface.
+ Demonstrates the use a 16x2 LCD display with SPI Shift Register.
+ Library works with LCD displays that are modified to use 
+ 595 Shift Register (in this case 74HC595) pin compatible.
  
  This sketch prints "Hello World!" to the LCD
  and shows the time.
  
-  The circuit:
- * LCD RS pin to digital pin 12
- * LCD Enable pin to digital pin 11
- * LCD D4 pin to digital pin 5
- * LCD D5 pin to digital pin 4
- * LCD D6 pin to digital pin 3
- * LCD D7 pin to digital pin 2
- * LCD R/W pin to ground
- * 10K resistor:
- * ends to +5V and ground
- * wiper to LCD VO pin (pin 3)
+ You can easily add Shift Register to your LCD
+ Please refer below link for pinouts and modifing your LCD
+
+ https://github.com/omersiar/ShiftedLCD
+
  
  Library originally added 18 Apr 2008
  by David A. Mellis
@@ -31,19 +24,19 @@
  by Tom Igoe
  modified 12 Feb 2012
  by Juan Hernandez
+ modified 16 Nov 2016
+ by Ömer Şiar Baysal
  
  This example code is in the public domain.
-
- http://www.arduino.cc/en/Tutorial/LiquidCrystal
  */
 
 // include the library code:
-#include <LiquidCrystal.h>
+#include <ShiftedLCD.h>
 #include <SPI.h>
 
 // initialize the library with the number of the sspin 
-//(or the latch pin of the 74HC595)
-LiquidCrystal lcd(9);
+// (or the latch pin of the 74HC595)
+LiquidCrystal lcd(8);
 
 void setup() {
   // set up the LCD's number of columns and rows: 

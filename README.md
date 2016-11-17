@@ -11,9 +11,11 @@ use them together on SPI bus. Old Libraries that supports Register Shift IC did 
 This is SPI only library, parallel and other buses (I2C or 1Wire, etc) are not supported.
 
 Download ZIP file from here to Import to Arduino IDE:
-https://github.com/omersiar/ShiftedLCD/archive/ShiftedLCD.zip
+
+https://github.com/omersiar/ShiftedLCD/archive/v1.zip
 
 Thanks Stan from 42bots.com for great, clean article and illustration.
+
 http://42bots.com/tutorials/arduino-controlled-lcd-using-a-shift-register-and-the-spi-library/
 
 ![alt text][logo]
@@ -32,7 +34,7 @@ TODO
 
 [X] Arduino IDE 1.6 modern structure
 
-[ ] Bug Fixes
+[  ] Bug Fixes
 
 
 == License ==

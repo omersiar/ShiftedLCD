@@ -42,17 +42,6 @@ void LiquidCrystal::initSPI(uint8_t ssPin) //SPI ###############################
 		
 	SPI.begin(); 
 	
-	//set clockDivider to SPI_CLOCK_DIV2 by default which is 8MHz
-	_clockDivider = SPI_CLOCK_DIV2;
-	SPI.setClockDivider(_clockDivider);
-	
-	//set data mode to SPI_MODE0 by default
-	_dataMode = SPI_MODE0;
-	SPI.setDataMode(_dataMode);
-	
-	//set bitOrder to MSBFIRST by default
-	_bitOrder = MSBFIRST; 
-	SPI.setBitOrder(_bitOrder);
 }
 
 void LiquidCrystal::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
@@ -270,13 +259,9 @@ void LiquidCrystal::write4bits(uint8_t value) {
 
 void LiquidCrystal::spiSendOut() //SPI #############################
 {
-  //just in case you are using SPI for more then one device
-  //set bitOrder, clockDivider and dataMode each time
-  SPI.setClockDivider(_clockDivider); 
-  SPI.setBitOrder(_bitOrder);
-  SPI.setDataMode(_dataMode); 
-  
   digitalWrite(_latchPin, LOW);
+  SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
   SPI.transfer(_bitString);
+  SPI.endTransaction();
   digitalWrite(_latchPin, HIGH); 
 }

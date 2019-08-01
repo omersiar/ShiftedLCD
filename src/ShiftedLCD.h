@@ -82,9 +82,6 @@ private:
   //SPI #####################################################################
   uint8_t _bitString; //for SPI  bit0=not used, bit1=RS, bit2=RW, bit3=Enable, bits4-7 = DB4-7
   uint8_t _latchPin;
-  uint8_t _clockDivider;
-  uint8_t _dataMode;
-  uint8_t _bitOrder;//SPI ####################################################
   
   uint8_t _displayfunction;
   uint8_t _displaycontrol;

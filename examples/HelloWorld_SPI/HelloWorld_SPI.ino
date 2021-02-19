@@ -36,7 +36,7 @@
 
 // initialize the library with the number of the sspin 
 // (or the latch pin of the 74HC595)
-LiquidCrystal lcd(8);
+LiquidCrystal lcd(9);
 
 void setup() {
   // set up the LCD's number of columns and rows: 
